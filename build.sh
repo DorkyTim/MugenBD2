@@ -11,4 +11,5 @@ pyinstaller codes/main.py \
   --exclude-module PyQt5.QtWebEngineWidgets \
   --exclude-module PyQt5.QtMultimediaWidgets \
   --exclude-module PyQt5.QtPrintSupport \
-  --add-data "BD2_best.pt;."
+  --add-data "BD2_best.pt;." \
+  --add-data ".env;."

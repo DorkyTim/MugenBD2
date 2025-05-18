@@ -1,10 +1,17 @@
 import os
+import sys
 from PyQt5.QtCore import QThread, pyqtSignal, pyqtSlot
 import asyncio
 from discord.ext import commands
 import discord
 from dotenv import load_dotenv
-load_dotenv()
+
+def resource_path(relative_path):
+    if hasattr(sys, '_MEIPASS'):
+        return os.path.join(sys._MEIPASS, relative_path)
+    return os.path.abspath(relative_path)
+
+load_dotenv(resource_path(".env"))
 
 def get_env_variable(name: str, required: bool = True, cast_type=str):
         value = os.getenv(name)
