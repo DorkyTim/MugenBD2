@@ -7,7 +7,7 @@ import time
 import random
 from PyQt5.QtCore import QThread, pyqtSignal
 from yolov8_detector import YOLOv8Detector
-from pause_rules import URCountRule, ContainsAnyRule, ContainsAllRule
+from pause_rules import MinURCountRule, ContainsAnyRule, ContainsAllRule
 
 def get_random_coordinates(bbox, x_range, y_range):
     x = random.randint(int(bbox[0] + x_range[0] * (bbox[2] - bbox[0])), int(bbox[0] + x_range[1] * (bbox[2] - bbox[0])))
@@ -43,6 +43,11 @@ class GachaAutoThread(QThread):
 
     def set_pause_rules(self, rules):
         self.pause_rules = rules
+        
+    def force_continue(self):
+        if self.pending_response:
+            self.pending_response = False
+            self.label_signal.emit("Forced resume from UI.")
 
     def run(self):
         ctypes.windll.user32.SetProcessDPIAware()
@@ -55,6 +60,11 @@ class GachaAutoThread(QThread):
         window = windows[0]
         hwnd = window._hWnd
 
+        # Ensure window is not minimized
+        if ctypes.windll.user32.IsIconic(hwnd):
+            ctypes.windll.user32.ShowWindow(hwnd, 9)  # SW_RESTORE
+
+        # Bring window to front
         ctypes.windll.user32.SetForegroundWindow(hwnd)
         time.sleep(0.1)
 

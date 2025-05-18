@@ -27,6 +27,5 @@ for filename in os.listdir(image_folder):
                 #print(f"Detected class {cls_id} with confidence {conf:.3f} at {xyxy}")
 
         print(f"\nResults for {filename}:")
-        results[0].show()
         
         print("Model Class Names:", list(model.names.values()))

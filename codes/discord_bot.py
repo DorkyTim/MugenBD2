@@ -6,6 +6,17 @@ import discord
 from dotenv import load_dotenv
 load_dotenv()
 
+def get_env_variable(name: str, required: bool = True, cast_type=str):
+        value = os.getenv(name)
+        if required and (value is None or value.strip() == ""):
+            raise ValueError(f"Environment variable '{name}' is required but not set.")
+        if cast_type and value is not None:
+            try:
+                return cast_type(value)
+            except Exception:
+                raise ValueError(f"Environment variable '{name}' must be a valid {cast_type.__name__}.")
+        return value
+
 class DiscordBotThread(QThread):
     log_signal = pyqtSignal(str)
     reroll_signal = pyqtSignal(str)
@@ -21,10 +32,8 @@ class DiscordBotThread(QThread):
 
         # Bot Init
         self.bot = commands.Bot(command_prefix="!", intents=intents)
-        self.target_token = os.getenv("DISCORD_BOT_TOKEN")
-        assert self.target_token is not None, "DISCORD_BOT_TOKEN must be set in the .env file"
-        self.target_channel_id = int(os.getenv("DISCORD_CHANNEL_ID"))
-        assert self.target_channel_id is not None, "DISCORD_CHANNEL_ID must be set in the .env file"
+        self.target_token = get_env_variable("DISCORD_BOT_TOKEN")
+        self.target_channel_id = get_env_variable("DISCORD_CHANNEL_ID", cast_type=int)
         self.target_user_id = target_user_id
 
         self.channel = None

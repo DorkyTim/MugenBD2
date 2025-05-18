@@ -1,10 +1,22 @@
 # yolov8_detector.py
+import os
+import sys
 from ultralytics import YOLO
+
+def resource_path(relative_path):
+    """Get path to resource, works for PyInstaller --onefile"""
+    if hasattr(sys, '_MEIPASS'):
+        return os.path.join(sys._MEIPASS, relative_path)
+    return relative_path
 
 class YOLOv8Detector:
     def __init__(self, model_path='best.pt', conf_threshold=0.5):
-        self.model = YOLO(model_path)              # Load YOLOv8 model
+        self.model = YOLO(resource_path(model_path))              # Load YOLOv8 model
         self.conf_threshold = conf_threshold       # Minimum confidence to count detection
+        
+    
+    def get_class_names(self):
+        return self.model.names
 
     def get_ur_info(self, img):
         results = self.model.predict(img, iou=0.7, verbose=False)
