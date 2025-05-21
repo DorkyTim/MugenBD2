@@ -7,7 +7,6 @@ import time
 import random
 from PyQt5.QtCore import QThread, pyqtSignal
 from yolov8_detector import YOLOv8Detector
-from pause_rules import MinURCountRule, ContainsAnyRule, ContainsAllRule
 
 def get_random_coordinates(bbox, x_range, y_range):
     x = random.randint(int(bbox[0] + x_range[0] * (bbox[2] - bbox[0])), int(bbox[0] + x_range[1] * (bbox[2] - bbox[0])))
